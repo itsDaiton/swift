@@ -17,6 +17,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  GithubAuthProvider,
   updateProfile
 } from 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -28,8 +29,10 @@ const Form = ({ type }) => {
   const [user, loading] = useAuthState(auth)
 
   let navigate = useNavigate()
+
   const googleProvider = new GoogleAuthProvider()
   const facebookProvider = new FacebookAuthProvider()
+  const githubProvider = new GithubAuthProvider()
 
   useEffect(() => {
     if (user) {
@@ -99,6 +102,16 @@ const Form = ({ type }) => {
     }
   }
 
+  const gitHubAuth = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubProvider)
+      console.log(result)
+      navigate('/')
+    } catch (error) {
+      console.log(error) 
+    }
+  }
+
   return (
     <div className='w-[500px] h-[900px] glassmorphism'>
       <div className='flex justify-center items-center pt-10'>
@@ -158,7 +171,7 @@ const Form = ({ type }) => {
               onClick={googleAuth}
             >
               <FontAwesomeIcon icon={faGoogle} className='pr-5'/>
-              {type === 'login' ? 'Continue with Google' : 'Sign Up with Google'}
+              Continue with Google
           </button>
         </div>
         <div className='flex justify-center items-center py-2'>
@@ -169,7 +182,7 @@ const Form = ({ type }) => {
               onClick={facebookAuth}
             >
               <FontAwesomeIcon icon={faFacebook} className='pr-5'/>
-              {type === 'login' ? 'Continue with Facebook' : 'Sign Up with Facebook'}
+              Continue with Facebook
           </button>
         </div>
         <div className='flex justify-center items-center py-2'>
@@ -177,9 +190,10 @@ const Form = ({ type }) => {
               type='button'
               className='text-[24px] text-white bg-[#24292F] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center
               inline-flex items-center px-5 py-2.5'
+              onClick={gitHubAuth}
             >
               <FontAwesomeIcon icon={faGithub} className='pr-5'/>
-              {type === 'login' ? 'Continue with GitHub' : 'Sign Up with GitHub'}
+              Continue with GitHub
           </button>
         </div>
         <div className='flex justify-center items-center pt-16'>
