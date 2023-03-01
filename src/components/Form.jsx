@@ -1,6 +1,7 @@
 import { 
   faLock,
-  faUser
+  faUser,
+  faTriangleExclamation
 } from '@fortawesome/free-solid-svg-icons'
 import { 
   faGithub,
@@ -18,14 +19,16 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   GithubAuthProvider,
-  updateProfile
+  updateProfile,
 } from 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { authErrors } from '../../utils/firebase-errors'
 
 const Form = ({ type }) => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [user, loading] = useAuthState(auth)
 
   let navigate = useNavigate()
@@ -50,28 +53,33 @@ const Form = ({ type }) => {
     }
   }
 
+  const clearError = () => {
+    setError('')
+  }
+
   const signUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((credentials) => {
-      console.log(credentials)
       navigate('/home')
     }).catch((error) => {
-      console.log(error)
+      clearError()
+      setError(authErrors[`${error.code}`])
     }) 
   }
 
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password)
     .then((credentials) => {
-      console.log(credentials)
       navigate('/')
     }).catch((error) => {
-      console.log(error)
+      clearError()
+      setError(authErrors[`${error.code}`])
     })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    clearError()
     if (type === 'login') {  
       signIn()
     }
@@ -121,8 +129,8 @@ const Form = ({ type }) => {
       </div>
       <form className='mt-[20px]' onSubmit={handleSubmit}>
         <div className='mx-10 mt-8'>
-          <span className='text-[16px] font-poppins text-white mx-2'>Email</span>
-          <div className='relative flex items-center text-white pt-2'>
+          <span className={`text-[16px] font-poppins mx-2 ${error ? 'text-red-600' : 'text-white'}`}>Email</span>
+          <div className={`relative flex items-center ${error ? 'text-red-600' : 'text-white'} pt-1`}>
             <FontAwesomeIcon icon={faUser} className='text-[24px] absolute ml-3 pointer-events-none'/>
             <input 
               placeholder='Email'
@@ -135,9 +143,9 @@ const Form = ({ type }) => {
             />
           </div>
         </div>
-        <div className='mx-10 mt-8'>
-          <span className='text-[16px] font-poppins text-white mx-2'>Password</span>
-          <div className='relative flex items-center text-white pt-2'>
+        <div className='mx-10 mt-4'>
+          <span className={`text-[16px] font-poppins mx-2 ${error ? 'text-red-600' : 'text-white'}`}>Password</span>
+          <div className={`relative flex items-center ${error ? 'text-red-600' : 'text-white'} pt-1`}>
             <FontAwesomeIcon icon={faLock} className='text-[24px] absolute ml-3 pointer-events-none'/>
             <input 
               placeholder='Password'
@@ -146,11 +154,15 @@ const Form = ({ type }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className='text-[20px] w-full h-[55px] outline-none border-none glass-input font-poppins text-semibold
-               pl-[48px] pr-3 placeholder-current ring-2'
+               pl-[48px] pr-3 placeholder-current'
             />
           </div>
         </div>
-        <div className='flex justify-center items-center pt-12'>
+        <div className='flex justify-center items-center flex-col relative pt-10'>
+          <div className={`flex justify-center items-center glass-error text-white mb-10 text-sm font-poppins w-3/4 py-2 ${error ? 'visible' : 'invisible'}`}>
+            <FontAwesomeIcon icon={faTriangleExclamation} className='text-[24px] pr-4 pl-4'/>
+            <p className='text-[16px] pr-4'>{error}</p>
+          </div>
           <button 
             type='submit'
             className='button-gradient text-[24px] text-white w-3/4 h-[60px] rounded-full shadow-xl font-poppins'
@@ -196,12 +208,12 @@ const Form = ({ type }) => {
               Continue with GitHub
           </button>
         </div>
-        <div className='flex justify-center items-center pt-16'>
-          <p className='text-white font-poppins text-[18px] underline cursor-pointer' onClick={handleNavigate}>
-            {type === 'login' ? "Don't have an account yet? Sign Up" : "Already have an account? Sign In"}
-          </p>
-        </div>
       </form>
+      <div className='flex justify-center items-center pt-4'>
+        <p className='text-white font-poppins text-[18px] underline cursor-pointer' onClick={handleNavigate}>
+          {type === 'login' ? "Don't have an account yet? Sign Up" : "Already have an account? Sign In"}
+        </p>
+      </div>
     </div>
   )
 }
