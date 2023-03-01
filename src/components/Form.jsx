@@ -1,12 +1,30 @@
-import { faLock, faUser } from '@fortawesome/free-solid-svg-icons'
-import { faGithub, faGoogle, faFacebook } from '@fortawesome/free-brands-svg-icons'
+import { 
+  faLock,
+  faUser
+} from '@fortawesome/free-solid-svg-icons'
+import { 
+  faGithub,
+  faGoogle,
+  faFacebook
+} from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { auth } from '../../utils/firebase'
+import { 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider
+} from 'firebase/auth'
 
 const Form = ({ type }) => {
 
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   let navigate = useNavigate()
+  const googleProvider = new GoogleAuthProvider()
 
   const handleNavigate = () => {
     if (type === 'login') {
@@ -17,6 +35,46 @@ const Form = ({ type }) => {
     }
   }
 
+  const signUp = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((credentials) => {
+      console.log(credentials)
+      navigate('/home')
+    }).catch((error) => {
+      console.log(error)
+    }) 
+  }
+
+  const signIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+    .then((credentials) => {
+      console.log(credentials)
+      navigate('/')
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (type === 'login') {  
+      signIn()
+    }
+    else {
+      signUp()
+    }
+  }
+
+  const googleAuth = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+      console.log(result.user)  
+      navigate('/')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className='w-[500px] h-[900px] glassmorphism'>
       <div className='flex justify-center items-center pt-10'>
@@ -24,7 +82,7 @@ const Form = ({ type }) => {
           {type === 'login' ? 'Login' : 'Register'}
         </h4>
       </div>
-      <form className='mt-[20px]'>
+      <form className='mt-[20px]' onSubmit={handleSubmit}>
         <div className='mx-10 mt-8'>
           <span className='text-[16px] font-poppins text-white mx-2'>Email</span>
           <div className='relative flex items-center text-white pt-2'>
@@ -33,7 +91,10 @@ const Form = ({ type }) => {
               placeholder='Email'
               type='text'
               autoComplete='off'
-              className='text-[20px] w-full h-[55px] outline-none border-none glass-input font-poppins text-semibold pl-[48px] pr-3 placeholder-current'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='text-[20px] w-full h-[55px] outline-none border-none glass-input font-poppins text-semibold 
+              pl-[48px] pr-3 placeholder-current'
             />
           </div>
         </div>
@@ -43,15 +104,18 @@ const Form = ({ type }) => {
             <FontAwesomeIcon icon={faLock} className='text-[24px] absolute ml-3 pointer-events-none'/>
             <input 
               placeholder='Password'
-              type='text'
+              type='password'
               autoComplete='off'
-              className='text-[20px] w-full h-[55px] outline-none border-none glass-input font-poppins text-semibold pl-[48px] pr-3 placeholder-current ring-2'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className='text-[20px] w-full h-[55px] outline-none border-none glass-input font-poppins text-semibold
+               pl-[48px] pr-3 placeholder-current ring-2'
             />
           </div>
         </div>
         <div className='flex justify-center items-center pt-12'>
           <button 
-            type='button'
+            type='submit'
             className='button-gradient text-[24px] text-white w-3/4 h-[60px] rounded-full shadow-xl font-poppins'
           >
             {type === 'login' ? 'Sign In' : 'Sign Up'}
@@ -65,32 +129,36 @@ const Form = ({ type }) => {
         <div className='flex justify-center items-center py-2'>
           <button 
               type='button'
-              className='text-[24px] text-white bg-[#db4a39] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center inline-flex items-center px-5 py-2.5'
+              className='text-[24px] text-white bg-[#db4a39] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center
+              inline-flex items-center px-5 py-2.5'
+              onClick={googleAuth}
             >
               <FontAwesomeIcon icon={faGoogle} className='pr-5'/>
-              Continue with Google
+              {type === 'login' ? 'Continue with Google' : 'Sign Up with Google'}
           </button>
         </div>
         <div className='flex justify-center items-center py-2'>
           <button 
               type='button'
-              className='text-[24px] text-white bg-[#3b5998] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center inline-flex items-center px-5 py-2.5'
+              className='text-[24px] text-white bg-[#3b5998] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center
+              inline-flex items-center px-5 py-2.5'
             >
               <FontAwesomeIcon icon={faFacebook} className='pr-5'/>
-              Continue with Facebook
+              {type === 'login' ? 'Continue with Facebook' : 'Sign Up with Facebook'}
           </button>
         </div>
         <div className='flex justify-center items-center py-2'>
           <button 
               type='button'
-              className='text-[24px] text-white bg-[#24292F] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center inline-flex items-center px-5 py-2.5'
+              className='text-[24px] text-white bg-[#24292F] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center
+              inline-flex items-center px-5 py-2.5'
             >
               <FontAwesomeIcon icon={faGithub} className='pr-5'/>
-              Continue with GitHub
+              {type === 'login' ? 'Continue with GitHub' : 'Sign Up with GitHub'}
           </button>
         </div>
-        <div className='flex justify-center items-center pt-16 cursor-pointer'>
-          <p className='text-white font-poppins text-[18px] underline' onClick={handleNavigate}>
+        <div className='flex justify-center items-center pt-16'>
+          <p className='text-white font-poppins text-[18px] underline cursor-pointer' onClick={handleNavigate}>
             {type === 'login' ? "Don't have an account yet? Sign Up" : "Already have an account? Sign In"}
           </p>
         </div>
