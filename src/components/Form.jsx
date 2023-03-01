@@ -8,23 +8,35 @@ import {
   faFacebook
 } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { auth } from '../../utils/firebase'
 import { 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  updateProfile
 } from 'firebase/auth'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 const Form = ({ type }) => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [user, loading] = useAuthState(auth)
 
   let navigate = useNavigate()
   const googleProvider = new GoogleAuthProvider()
+  const facebookProvider = new FacebookAuthProvider()
+
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    }
+  }, [user])
+  
 
   const handleNavigate = () => {
     if (type === 'login') {
@@ -72,6 +84,18 @@ const Form = ({ type }) => {
       navigate('/')
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const facebookAuth = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider)
+      const credential = await FacebookAuthProvider.credentialFromResult(result)
+      const token = credential.accessToken
+      let picUrl = result.user.photoURL + `?height=500&access_token=${token}`
+      await updateProfile(auth.currentUser, { photoURL: picUrl})   
+    } catch (error) {
+      console.log(error)  
     }
   }
 
@@ -142,6 +166,7 @@ const Form = ({ type }) => {
               type='button'
               className='text-[24px] text-white bg-[#3b5998] w-3/4 h-[60px] rounded-full shadow-xl font-poppins text-center
               inline-flex items-center px-5 py-2.5'
+              onClick={facebookAuth}
             >
               <FontAwesomeIcon icon={faFacebook} className='pr-5'/>
               {type === 'login' ? 'Continue with Facebook' : 'Sign Up with Facebook'}
