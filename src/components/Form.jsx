@@ -29,6 +29,7 @@ const Form = ({ type }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [providerError, setProviderError] = useState('')
   const [user, loading] = useAuthState(auth)
 
   let navigate = useNavigate()
@@ -55,6 +56,7 @@ const Form = ({ type }) => {
 
   const clearError = () => {
     setError('')
+    setProviderError('')
   }
 
   const signUp = () => {
@@ -94,7 +96,8 @@ const Form = ({ type }) => {
       console.log(result.user)  
       navigate('/')
     } catch (error) {
-      console.log(error)
+      clearError()
+      setProviderError(authErrors[`${error.code}`])
     }
   }
 
@@ -106,7 +109,8 @@ const Form = ({ type }) => {
       let picUrl = result.user.photoURL + `?height=500&access_token=${token}`
       await updateProfile(auth.currentUser, { photoURL: picUrl})   
     } catch (error) {
-      console.log(error)  
+      clearError()
+      setProviderError(authErrors[`${error.code}`]) 
     }
   }
 
@@ -116,7 +120,8 @@ const Form = ({ type }) => {
       console.log(result)
       navigate('/')
     } catch (error) {
-      console.log(error) 
+      clearError()
+      setProviderError(authErrors[`${error.code}`])
     }
   }
 
@@ -159,9 +164,9 @@ const Form = ({ type }) => {
           </div>
         </div>
         <div className='flex justify-center items-center flex-col relative pt-10'>
-          <div className={`flex justify-center items-center glass-error text-white mb-10 text-sm font-poppins w-3/4 py-2 ${error ? 'visible' : 'invisible'}`}>
+          <div className={`flex justify-center items-center glass-error text-white mb-10 text-sm font-poppins w-fit py-2 mx-8 ${error || providerError ? 'visible' : 'invisible'}`}>
             <FontAwesomeIcon icon={faTriangleExclamation} className='text-[24px] pr-4 pl-4'/>
-            <p className='text-[16px] pr-4'>{error}</p>
+            <p className='text-[14px] pr-4'>{error || providerError}</p>
           </div>
           <button 
             type='submit'
