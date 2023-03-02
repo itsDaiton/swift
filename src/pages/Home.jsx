@@ -2,6 +2,7 @@ import React from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../utils/firebase'
 import Navbar from '../components/Navbar'
+import Input from '../components/Input'
 
 
 const Home = () => {
@@ -11,7 +12,7 @@ const Home = () => {
   return (
     <div>
       <Navbar/>
-      <h4>Home page.</h4>
+      <Input/>
     </div>
   )
 }

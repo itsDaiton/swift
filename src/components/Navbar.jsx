@@ -26,7 +26,7 @@ const Navbar = () => {
 	}
 
   return (
-    <div className='flex justify-between bg-black text-white h-[70px]'>
+    <div className='flex justify-between bg-black text-white h-[7vh]'>
 			<div className='flex justify-center items-center pl-6 space-x-4'>
 				<FontAwesomeIcon icon={faPaperPlane} className='text-[36px]'/>
 				<p className='text-[36px] font-poppins tracking-widest font-bold'>

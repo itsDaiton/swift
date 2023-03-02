@@ -136,7 +136,7 @@ const Form = ({ type }) => {
         <div className='mx-10 mt-8'>
           <span className={`text-[16px] font-poppins mx-2 ${error ? 'text-red-600' : 'text-white'}`}>Email</span>
           <div className={`relative flex items-center ${error ? 'text-red-600' : 'text-white'} pt-1`}>
-            <FontAwesomeIcon icon={faUser} className='text-[24px] absolute ml-3 pointer-events-none'/>
+            <FontAwesomeIcon icon={faUser} className='text-[24px] absolute ml-3 pointer-events-none z-10'/>
             <input 
               placeholder='Email'
               type='text'
@@ -151,7 +151,7 @@ const Form = ({ type }) => {
         <div className='mx-10 mt-4'>
           <span className={`text-[16px] font-poppins mx-2 ${error ? 'text-red-600' : 'text-white'}`}>Password</span>
           <div className={`relative flex items-center ${error ? 'text-red-600' : 'text-white'} pt-1`}>
-            <FontAwesomeIcon icon={faLock} className='text-[24px] absolute ml-3 pointer-events-none'/>
+            <FontAwesomeIcon icon={faLock} className='text-[24px] absolute ml-3 pointer-events-none z-10'/>
             <input 
               placeholder='Password'
               type='password'
