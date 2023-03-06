@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { DirectionsRenderer, DirectionsService, GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { DirectionsRenderer, DistanceMatrixService, GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { useSelector } from 'react-redux'
 import { selectDestination, selectOrigin } from '../slices/coordsSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faBicycle, faCar, faLocation, faLocationDot, faPersonWalking, faTrain } from '@fortawesome/free-solid-svg-icons'
-import { motion } from 'framer-motion'
+import { faArrowRight, faCar, faLocation, faLocationDot, faPersonWalking, faTrain } from '@fortawesome/free-solid-svg-icons'
+import { distance, motion } from 'framer-motion'
 import { useNavigate } from 'react-router'
 
 const Output = () => {
@@ -31,6 +31,7 @@ const Output = () => {
 	const [markers, setMarkers] = useState([])
 	const [travelMode, setTravelMode] = useState('DRIVING')
 	const [response, setResponse] = useState(null)
+	const [distanceMatrix, setDistanceMatrix] = useState(null)
 
 	const navigate = useNavigate()
 
@@ -49,6 +50,20 @@ const Output = () => {
 			travelMode: travelMode
 		})
 		setResponse(result)
+	}
+
+	const calculateMatrix = async () => {
+		const distanceMatrixService = new google.maps.DistanceMatrixService()
+		const result = await distanceMatrixService.getDistanceMatrix({
+			destinations: [{
+				lat: destination.lat, lng: destination.lng
+			}],
+			origins: [{
+				lat: origin.lat, lng: origin.lng
+			}],
+			travelMode: travelMode
+		})
+		setDistanceMatrix(result)
 	}
 
 	const handleSwitch = (e) => {
@@ -85,16 +100,17 @@ const Output = () => {
 
 	useEffect(() => {
 		getRoute()
+		calculateMatrix()
 	}, [origin, destination, travelMode])
 
 	if (!isLoaded) {
 		return <div>Loading...</div>
 	}
 
-	console.log(response)
+	console.log(distanceMatrix)
 
   return (
-		<div className='h-[93vh] bg-gradient'>
+		<div className='bg-gradient'>
 			<div className='flex justify-center items-center space-x-[50px] py-[40px]'>
 				<div className='flex justify-center items-center space-x-[70px]'>
 					<div className={`relative flex items-center pt-1 text-white`}>
@@ -125,7 +141,8 @@ const Output = () => {
 			<div className='flex justify-center items-center'>
 				{modes.map((mode, index) => (
 				<motion.label
-					for={mode.value.toUpperCase()} 
+					key={index}
+					htmlFor={mode.value.toUpperCase()} 
 					className={`text-white font-poppins text-[18px]  cursor-pointer
 					flex justify-center items-center flex-col my-5 px-10 pb-2 space-y-2 mx-2 
 					${mode.value.toUpperCase() === travelMode ? 'glass-radio-active' : ''}`}
@@ -183,6 +200,12 @@ const Output = () => {
 				}
 				</GoogleMap>
 			</div>
+			{distanceMatrix &&
+			<div className='flex justify-center items-center flex-col text-white font-poppins text-[20px]'>
+				<p>Trip distance: {distanceMatrix.rows[0].elements[0].distance.text}</p>
+				<p>Trip duration: {distanceMatrix.rows[0].elements[0].duration.text}</p>
+			</div>
+			}
 		</div>
   )
 }
