@@ -12,6 +12,9 @@ const Input = () => {
   const [destination, setDestination] = useState(null)
   const [user, loading] = useAuthState(auth)
   
+  console.log(destination)
+  console.log(origin)
+
   if (destination) {
     console.log(destination.geometry.location.lat())
     console.log(destination.geometry.location.lng())
