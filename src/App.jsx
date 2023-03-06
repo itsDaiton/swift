@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux'
 import { Route, Router, Routes } from 'react-router'
 import { store } from '../utils/store'
-import { Home, Login, Register } from './pages'
+import { Home, Login, Register, Map } from './pages'
 
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/' element={<Home/>}/>
+        <Route path='/map' element={<Map/>}/>
       </Routes>
     </Provider>
   )

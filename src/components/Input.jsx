@@ -7,6 +7,7 @@ import { auth } from '../../utils/firebase'
 import { motion } from 'framer-motion'
 import { useDispatch, useSelector } from 'react-redux'
 import { setOrigin, setDestination, selectOrigin, selectDestination } from '../slices/coordsSlice'
+import { useNavigate } from 'react-router'
 
 const Input = () => {
 
@@ -15,6 +16,12 @@ const Input = () => {
   const origin = useSelector(selectOrigin)
   const destination = useSelector(selectDestination)
   const dispatch = useDispatch()
+
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    navigate('/map')
+  }
 
   return (
     <div className='h-[93vh] bg-gradient'>
@@ -91,6 +98,7 @@ const Input = () => {
           whileTap={{
             scale: 0.9
           }}
+          onClick={handleNavigate}
         >
           Begin
         </motion.button>
