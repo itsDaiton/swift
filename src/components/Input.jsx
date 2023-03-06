@@ -1,24 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Autocompelte from 'react-google-autocomplete'
 import { faLocation, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../utils/firebase'
 import { motion } from 'framer-motion'
+import { useDispatch, useSelector } from 'react-redux'
+import { setOrigin, setDestination, selectOrigin, selectDestination } from '../slices/coordsSlice'
 
 const Input = () => {
 
-  const [origin, setOrigin] = useState(null)
-  const [destination, setDestination] = useState(null)
   const [user, loading] = useAuthState(auth)
-  
-  console.log(destination)
-  console.log(origin)
 
-  if (destination) {
-    console.log(destination.geometry.location.lat())
-    console.log(destination.geometry.location.lng())
-  }
+  const origin = useSelector(selectOrigin)
+  const destination = useSelector(selectDestination)
+  const dispatch = useDispatch()
 
   return (
     <div className='h-[93vh] bg-gradient'>
@@ -49,7 +45,15 @@ const Input = () => {
           <FontAwesomeIcon icon={faLocationDot} className='text-[28px] absolute ml-5 pointer-events-none z-10'/>
           <Autocompelte
             apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
-            onPlaceSelected={(place) => setOrigin(place)}
+            onPlaceSelected={(place) => {
+              dispatch(
+                setOrigin({
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng(),
+                  name: place.formatted_address        
+                })
+              )
+            }}
             placeholder='Where from?'
             className='text-[28px] h-[80px] outline-none border-none glassmorphism font-poppins text-semibold
             pl-[60px] pr-10 placeholder-current'
@@ -59,7 +63,15 @@ const Input = () => {
           <FontAwesomeIcon icon={faLocation} className='text-[28px] absolute ml-5 pointer-events-none z-10'/>
           <Autocompelte
             apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
-            onPlaceSelected={(place) => setDestination(place)}
+            onPlaceSelected={(place) => {
+              dispatch(
+                setDestination({
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng(),
+                  name: place.formatted_address              
+                })
+              )
+            }}
             placeholder='Where to?'
             className='text-[28px] h-[80px] outline-none border-none glassmorphism font-poppins text-semibold
             pl-[60px] pr-10 placeholder-current'

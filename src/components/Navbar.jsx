@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router'
 import { auth } from '../../utils/firebase'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useDispatch } from 'react-redux'
+import { setDestination, setOrigin } from '../slices/coordsSlice'
 
 const Navbar = () => {
 
@@ -11,8 +13,16 @@ const Navbar = () => {
 
 	let navigate = useNavigate()
 
+  const dispatch = useDispatch()
+
 	const handleSignOut = () => {
     auth.signOut().then(() => {
+      dispatch(
+        setOrigin(null)
+      )
+      dispatch(
+        setDestination(null)
+      )
       navigate('/login')
     })
   }

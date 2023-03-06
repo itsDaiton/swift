@@ -25,7 +25,7 @@ export const coordsSlice = createSlice({
 export const { setOrigin, setDestination, setDistance } = coordsSlice.actions
 
 export const selectOrigin = (state) => state.coords.origin
-export const selectDestination = (state) => state.nav.destination
-export const selectDistance = (state) => state.nav.distance
+export const selectDestination = (state) => state.coords.destination
+export const selectDistance = (state) => state.coords.distance
 
 export default coordsSlice.reducer
