@@ -3,8 +3,10 @@ import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-map
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faCar, faClock, faLocation, faLocationDot, faPersonWalking, faRoad, faTrain } from '@fortawesome/free-solid-svg-icons'
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router'
+import { Navigate, useNavigate } from 'react-router'
 import ReactGoogleAutocomplete from 'react-google-autocomplete'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../utils/firebase'
 
 const Output = () => {
 
@@ -22,6 +24,8 @@ const Output = () => {
 			icon: faPersonWalking
 		},
 	]
+
+  const [user, loading] = useAuthState(auth)
   
   const [origin, setOrigin] = useState()
   const [destination, setDestination] = useState()
@@ -87,8 +91,16 @@ const Output = () => {
 	}, [origin, destination, travelMode])
 
 	if (!isLoaded) {
-		return <div>Loading...</div>
+		return <div className='bg-gradient h-screen text-white'>Loading...</div>
 	}
+
+  if (loading) {
+    return <div className='bg-gradient h-screen text-white'>Loading...</div>
+  }
+
+  if (!user) {
+    return <Navigate to='/login' replace/>
+  }
 
   return (
 		<div className='bg-gradient'>

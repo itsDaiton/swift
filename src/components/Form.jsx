@@ -123,6 +123,10 @@ const Form = ({ type }) => {
     }
   }
 
+  if (loading) {
+    return <div className='bg-gradient h-screen text-white'>Loading...</div>
+  }
+
   return (
     <div className='w-[500px] h-[900px] glassmorphism'>
       <div className='flex justify-center items-center pt-10'>

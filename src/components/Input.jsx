@@ -4,7 +4,6 @@ import { auth } from '../../utils/firebase'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 
 const Input = () => {
@@ -14,7 +13,12 @@ const Input = () => {
   const navigate = useNavigate()
 
   const handleNavigate = () => {
-    navigate('/map')
+    if (user) {
+      navigate('/map')
+    }
+    else {
+      navigate('/login')
+    }
   }
 
   const getFirstName = (name) => {
@@ -23,7 +27,7 @@ const Input = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className='bg-gradient h-screen text-white'>Loading...</div>
   }
 
   return (
@@ -47,7 +51,7 @@ const Input = () => {
           }}
           className='text-white font-semibold font-poppins text-[108px] pt-[80px]'
         >
-          Welcome to Swift{user.displayName !== null ? `, ${getFirstName(user.displayName)}` : ''}.
+          Welcome to Swift{(user && user.displayName !== null) ? `, ${getFirstName(user.displayName)}` : ''}.
         </motion.p>
       </div>
       <div className='flex justify-center'>
@@ -128,7 +132,7 @@ const Input = () => {
       </div>
       <div className='flex justify-center pt-[120px]'>
         <motion.button
-          type='submit'
+          type='button'
           className={`glassmorphism text-[38px] text-white w-[15%] h-[90px] rounded-full shadow-xl font-poppins font-semibold`}
           initial={{ 
             opacity: 0,
@@ -153,7 +157,7 @@ const Input = () => {
           }}
           onClick={handleNavigate}
         >
-          Begin
+          {user ? 'Begin' : 'Sign In'}
         </motion.button>
       </div>
     </div>
