@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { DirectionsRenderer, DistanceMatrixService, GoogleMap, useJsApiLoader } from '@react-google-maps/api'
-import { useSelector } from 'react-redux'
-import { selectDestination, selectOrigin } from '../slices/coordsSlice'
+import { DirectionsRenderer, GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRight, faCar, faLocation, faLocationDot, faPersonWalking, faTrain } from '@fortawesome/free-solid-svg-icons'
-import { distance, motion } from 'framer-motion'
+import { faArrowRight, faCar, faClock, faLocation, faLocationDot, faPersonWalking, faRoad, faTrain } from '@fortawesome/free-solid-svg-icons'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router'
+import ReactGoogleAutocomplete from 'react-google-autocomplete'
 
 const Output = () => {
 
@@ -23,15 +22,16 @@ const Output = () => {
 			icon: faPersonWalking
 		},
 	]
-
-	const origin = useSelector(selectOrigin)
-	const destination = useSelector(selectDestination)
+  
+  const [origin, setOrigin] = useState()
+  const [destination, setDestination] = useState()
 
 	const [map, setMap] = useState(null)
-	const [markers, setMarkers] = useState([])
 	const [travelMode, setTravelMode] = useState('DRIVING')
 	const [response, setResponse] = useState(null)
 	const [distanceMatrix, setDistanceMatrix] = useState(null)
+
+  const [libraries] = useState(['places'])
 
 	const navigate = useNavigate()
 
@@ -39,31 +39,38 @@ const Output = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+    libraries
   })
 
 	const getRoute = async () => {
-		const directionsService = new google.maps.DirectionsService()
-		const result = await directionsService.route({
-			origin: origin,
-			destination: destination,
-			travelMode: travelMode
-		})
-		setResponse(result)
+    setResponse(null)
+    if (origin && destination) {
+      const directionsService = new google.maps.DirectionsService()
+      const result = await directionsService.route({
+        origin: origin,
+        destination: destination,
+        travelMode: travelMode
+      })
+      setResponse(result)
+    }
 	}
 
 	const calculateMatrix = async () => {
-		const distanceMatrixService = new google.maps.DistanceMatrixService()
-		const result = await distanceMatrixService.getDistanceMatrix({
-			destinations: [{
-				lat: destination.lat, lng: destination.lng
-			}],
-			origins: [{
-				lat: origin.lat, lng: origin.lng
-			}],
-			travelMode: travelMode
-		})
-		setDistanceMatrix(result)
+    if (origin && destination) {
+      const distanceMatrixService = new google.maps.DistanceMatrixService()
+      const result = await distanceMatrixService.getDistanceMatrix({
+        destinations: [{
+          lat: destination.lat, lng: destination.lng
+        }],
+        origins: [{
+          lat: origin.lat, lng: origin.lng
+        }],
+        travelMode: travelMode,
+        language: 'en'
+      })
+      setDistanceMatrix(result)
+    }
 	}
 
 	const handleSwitch = (e) => {
@@ -75,30 +82,6 @@ const Output = () => {
   }
 
 	useEffect(() => {
-		setMarkers(current => [...current, {
-			lat: origin.lat,
-			lng: origin.lng
-		}])
-		setMarkers(current => [...current, {
-			lat: destination.lat,
-			lng: destination.lng
-		}])
-	}, [])
-	
-	useEffect(() => {
-		if (map) {
-			const bounds = new window.google.maps.LatLngBounds()
-			markers.map(marker => {
-				bounds.extend({
-					lat: marker.lat,
-					lng: marker.lng
-				})
-			})
-			map.fitBounds(bounds)
-		}
-	}, [map, markers])
-
-	useEffect(() => {
 		getRoute()
 		calculateMatrix()
 	}, [origin, destination, travelMode])
@@ -107,43 +90,47 @@ const Output = () => {
 		return <div>Loading...</div>
 	}
 
-	console.log(distanceMatrix)
-
   return (
 		<div className='bg-gradient'>
-			<div className='flex justify-center items-center space-x-[50px] py-[40px]'>
-				<div className='flex justify-center items-center space-x-[70px]'>
-					<div className={`relative flex items-center pt-1 text-white`}>
-						<FontAwesomeIcon icon={faLocationDot} className='text-[28px] absolute ml-5 pointer-events-none z-10'/>
-						<div
-							className='text-[28px] h-[80px] outline-none border-none glassmorphism font-poppins text-semibold
-							pl-[60px] pr-10 placeholder-current flex justify-center items-center'
-						>
-							{origin.name}
-						</div>
-					</div>
-				</div>
-				<div className='flex justify-center items-center'>
-					<FontAwesomeIcon icon={faArrowRight} className='text-[48px] z-10 text-white'/>
-				</div>
-				<div className='flex justify-center items-center space-x-[70px]'>
-					<div className={`relative flex items-center pt-1 text-white`}>
-						<FontAwesomeIcon icon={faLocation} className='text-[28px] absolute ml-5 pointer-events-none z-10'/>
-						<div
-							className='text-[28px] h-[80px] outline-none border-none glassmorphism font-poppins text-semibold
-							pl-[60px] pr-10 placeholder-current flex justify-center items-center'
-						>
-							{destination.name}
-						</div>
-					</div>
-				</div>
-			</div>
+      <div className='flex justify-center items-center space-x-[50px] pt-5'>
+        <div className={`relative flex items-center pt-1 text-white`}>
+          <FontAwesomeIcon icon={faLocationDot} className='text-[24px] absolute ml-5 pointer-events-none z-10'/>
+          <ReactGoogleAutocomplete
+            apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
+            onPlaceSelected={(place) => setOrigin({
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+              name: place.formatted_address        
+            })}
+            placeholder='Where from?'
+            className='text-[22px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
+            pl-[60px] pr-10 placeholder-current'
+          />
+        </div>
+        <div className='flex justify-center items-center'>
+          <FontAwesomeIcon icon={faArrowRight} className='text-[36px] text-white'/>
+        </div>
+        <div className={`relative flex items-center pt-1 text-white`}>
+          <FontAwesomeIcon icon={faLocation} className='text-[24px] absolute ml-5 pointer-events-none z-10'/>
+          <ReactGoogleAutocomplete
+            apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
+            onPlaceSelected={(place) => setDestination({
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng(),
+              name: place.formatted_address              
+            })}
+            placeholder='Where to?'
+            className='text-[22px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
+            pl-[60px] pr-10 placeholder-current'
+          />
+        </div>
+      </div>
 			<div className='flex justify-center items-center'>
 				{modes.map((mode, index) => (
 				<motion.label
 					key={index}
 					htmlFor={mode.value.toUpperCase()} 
-					className={`text-white font-poppins text-[18px]  cursor-pointer
+					className={`text-white font-poppins text-[16px]  cursor-pointer
 					flex justify-center items-center flex-col my-5 px-10 pb-2 space-y-2 mx-2 
 					${mode.value.toUpperCase() === travelMode ? 'glass-radio-active' : ''}`}
 					whileHover={{
@@ -163,7 +150,7 @@ const Output = () => {
 						onChange={handleSwitch}
 						className='invisible opacity-0'
 					/>
-					<FontAwesomeIcon icon={mode.icon} className='text-[28px]'/>
+					<FontAwesomeIcon icon={mode.icon} className='text-[20px]'/>
 					<span>
 						{mode.value}				
 					</span>
@@ -174,16 +161,16 @@ const Output = () => {
 				<GoogleMap
 					onLoad={onLoad}
 					mapContainerStyle={{
-						height: '600px',
+						height: '550px',
 						width: '1000px',
 						borderRadius: '15px',
 						boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)'
 					}}
-					center={{
-						lat: 49.968,
-						lng: 14.513
-					}}
-					zoom={10}
+          center={{
+            lat: origin ? origin.lat : 50.075,
+            lng: origin ? origin.lng : 14.436
+          }}
+					zoom={11}
 					key={import.meta.env.VITE_GOOGLE_API_KEY}
 					options={{
 						streetViewControl: false,
@@ -201,11 +188,38 @@ const Output = () => {
 				</GoogleMap>
 			</div>
 			{distanceMatrix &&
-			<div className='flex justify-center items-center flex-col text-white font-poppins text-[20px]'>
-				<p>Trip distance: {distanceMatrix.rows[0].elements[0].distance.text}</p>
-				<p>Trip duration: {distanceMatrix.rows[0].elements[0].duration.text}</p>
+			<div className='flex justify-center items-center flex-col text-white font-poppins text-[20px] font-semibold'>
+        {distanceMatrix.rows[0].elements[0].status === 'ZERO_RESULTS' ?
+        <p>No results.</p>
+        :
+        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-5 mt-5 w-1/6'>
+          <div className='flex flex-row items-center space-x-2'>
+            <FontAwesomeIcon icon={faRoad}/>
+            <p>{distanceMatrix.rows[0].elements[0].distance.text}</p>
+          </div>
+          <div className='flex flex-row items-center space-x-2'>
+            <FontAwesomeIcon icon={faClock}/>
+            <p>{distanceMatrix.rows[0].elements[0].duration.text}</p>  
+          </div> 
+        </div>  
+        }
 			</div>
-			}
+      }
+      <div className='flex justify-center items-center flex-col text-[20px] py-10'>
+        <motion.button
+          type='button'
+          className='glassmorphism text-[28px] text-white w-[10%] h-[70px] rounded-full shadow-xl font-poppins'
+          whileHover={{
+            scale: 1.1
+          }}
+          whileTap={{
+            scale: 0.9
+          }}
+          onClick={handleNavigate}
+        >
+          Back
+        </motion.button>
+      </div>
 		</div>
   )
 }
