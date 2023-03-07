@@ -3,7 +3,7 @@ import Form from '../components/Form'
 
 const Register = () => {
   return (
-    <div className="bg-[url('./src/assets/background.jpg')] h-screen w-screen flex justify-center items-center">
+    <div className="bg-gradient h-screen w-screen flex justify-center items-center">
       <Form type='register'/>  
     </div>
   )

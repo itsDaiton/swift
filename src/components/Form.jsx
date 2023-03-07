@@ -62,7 +62,7 @@ const Form = ({ type }) => {
   const signUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((credentials) => {
-      navigate('/home')
+      navigate('/')
     }).catch((error) => {
       clearError()
       setError(authErrors[`${error.code}`])
