@@ -93,7 +93,6 @@ const Form = ({ type }) => {
   const googleAuth = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider)
-      console.log(result.user)  
       navigate('/')
     } catch (error) {
       clearError()
@@ -117,7 +116,6 @@ const Form = ({ type }) => {
   const gitHubAuth = async () => {
     try {
       const result = await signInWithPopup(auth, githubProvider)
-      console.log(result)
       navigate('/')
     } catch (error) {
       clearError()
