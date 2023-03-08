@@ -128,25 +128,25 @@ const Form = ({ type }) => {
     {
       text: 'Continue with Google',
       icon: faGoogle,
-      color: '#db4a39',
+      color: 'bg-[#db4a39]',
       action: googleAuth
     },
     {
       text: 'Continue with Facebook',
       icon: faFacebook,
-      color: '#3b5998',
+      color: 'bg-[#3b5998]',
       action: facebookAuth
     },
     {
       text: 'Continue with GitHub',
       icon: faGithub,
-      color: '#24292F',
+      color: 'bg-[#24292F]',
       action: gitHubAuth
     },
   ]
 
   return (
-    <div className='glassmorphism sm:py-10 py-5 px-1 mx-10 my-10'>
+    <div className='glassmorphism sm:py-10 py-5 px-1 mx-10 my-10 w-[600px]'>
       <div className='flex justify-center items-center'>
         <h4 className='text-white lg:text-[32px] md:text-[26px] sm:text-[24px] text-[20px] font-poppins'>
           {type === 'login' ? 'Login' : 'Register'}
@@ -186,7 +186,7 @@ const Form = ({ type }) => {
           </div>
         </div>
         <div className='flex justify-center items-center flex-col relative pt-5'>
-          <div className={`flex justify-center items-center glass-error text-white sm:mb-10 mb-4 text-sm font-poppins w-fit py-2 mx-8 ${error || providerError ? 'visible' : 'invisible'}`}>
+          <div className={`flex justify-center items-center glass-error text-white sm:mb-10 mb-4 w-fit text-sm font-poppins py-2 mx-8 ${error || providerError ? 'visible' : 'invisible'}`}>
             <FontAwesomeIcon icon={faTriangleExclamation} className='text-[24px] pr-4 pl-4'/>
             <p className='text-[14px] pr-4'>{error || providerError}</p>
           </div>
@@ -209,7 +209,7 @@ const Form = ({ type }) => {
             <button 
                 type='button'
                 className={`text-[24px] text-white sm:w-[100%] w-fit px-10 py-3 rounded-full shadow-xl font-poppins
-                text-center inline-flex items-center bg-[${provider.color}]`}
+                text-center inline-flex items-center ${provider.color}`}
                 onClick={provider.action}
               >
                 <FontAwesomeIcon icon={provider.icon} className='sm:pr-5 pr-0'/>
