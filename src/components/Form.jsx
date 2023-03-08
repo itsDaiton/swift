@@ -209,7 +209,7 @@ const Form = ({ type }) => {
             <button 
                 type='button'
                 className={`text-[24px] text-white sm:w-[100%] w-fit px-10 py-3 rounded-full shadow-xl font-poppins
-                text-center inline-flex items-center ${provider.color}`}
+                text-center inline-flex items-center ${provider.color} flex justify-center`}
                 onClick={provider.action}
               >
                 <FontAwesomeIcon icon={provider.icon} className='sm:pr-5 pr-0'/>
