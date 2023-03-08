@@ -104,7 +104,7 @@ const Output = () => {
 
   return (
 		<div className='bg-gradient'>
-      <div className='flex justify-center items-center space-x-[50px] pt-5'>
+      <div className='flex justify-center items-center lg:space-x-[50px] space-x-0 pt-5 lg:flex-row flex-col'>
         <div className={`relative flex items-center pt-1 text-white`}>
           <FontAwesomeIcon icon={faLocationDot} className='text-[24px] absolute ml-5 pointer-events-none z-10'/>
           <ReactGoogleAutocomplete
@@ -115,11 +115,11 @@ const Output = () => {
               name: place.formatted_address        
             })}
             placeholder='Where from?'
-            className='text-[22px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
-            pl-[60px] pr-10 placeholder-current'
+            className='lg:text-[22px] md:text-[20px] sm:text-[18px] text-[16px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
+            pl-[60px] sm:pr-10 pr-0 placeholder-current'
           />
         </div>
-        <div className='flex justify-center items-center'>
+        <div className='justify-center items-center flex lg:visible invisible'>
           <FontAwesomeIcon icon={faArrowRight} className='text-[36px] text-white'/>
         </div>
         <div className={`relative flex items-center pt-1 text-white`}>
@@ -132,8 +132,8 @@ const Output = () => {
               name: place.formatted_address              
             })}
             placeholder='Where to?'
-            className='text-[22px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
-            pl-[60px] pr-10 placeholder-current'
+            className='lg:text-[22px] md:text-[20px] sm:text-[18px] text-[16px] h-[70px] outline-none border-none glassmorphism font-poppins text-semibold
+            pl-[60px] sm:pr-10 pr-0 placeholder-current'
           />
         </div>
       </div>
@@ -143,7 +143,7 @@ const Output = () => {
 					key={index}
 					htmlFor={mode.value.toUpperCase()} 
 					className={`text-white font-poppins text-[16px]  cursor-pointer
-					flex justify-center items-center flex-col my-5 px-10 pb-2 space-y-2 mx-2 
+					flex justify-center items-center flex-col my-5 lg:px-10 md:px-10 px-6 lg:pb-2 pb-5 space-y-2 mx-2 
 					${mode.value.toUpperCase() === travelMode ? 'glass-radio-active' : ''}`}
 					whileHover={{
 						scale: 1.05
@@ -162,8 +162,8 @@ const Output = () => {
 						onChange={handleSwitch}
 						className='invisible opacity-0'
 					/>
-					<FontAwesomeIcon icon={mode.icon} className='text-[20px]'/>
-					<span>
+					<FontAwesomeIcon icon={mode.icon} className='sm:text-[20px] text-[18px]'/>
+					<span className='lg:flex hidden'>
 						{mode.value}				
 					</span>
 				</motion.label>		
@@ -176,7 +176,9 @@ const Output = () => {
 						height: '550px',
 						width: '1000px',
 						borderRadius: '15px',
-						boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)'
+						boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)',
+            marginLeft: '20px',
+            marginRight: '20px',
 					}}
           center={{
             lat: origin ? origin.lat : 50.075,
@@ -202,9 +204,11 @@ const Output = () => {
 			{distanceMatrix &&
 			<div className='flex justify-center items-center flex-col text-white font-poppins text-[20px] font-semibold'>
         {distanceMatrix.rows[0].elements[0].status === 'ZERO_RESULTS' ?
-        <p>No results.</p>
+        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-10 mt-5'>
+          <p>No route found.</p>
+        </div>
         :
-        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-5 mt-5 w-[20%]'>
+        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-10 mt-5'>
           <div className='flex flex-row items-center space-x-2'>
             <FontAwesomeIcon icon={faRoad}/>
             <p>{distanceMatrix.rows[0].elements[0].distance.text}</p>
@@ -220,7 +224,8 @@ const Output = () => {
       <div className='flex justify-center items-center flex-col text-[20px] py-10'>
         <motion.button
           type='button'
-          className='glassmorphism text-[28px] text-white w-[10%] h-[70px] rounded-full shadow-xl font-poppins'
+          className='glassmorphism text-white rounded-full shadow-xl font-poppins
+          lg:text-[28px] md:text-[24px] sm:text-[20px] text-[18px] px-10 py-5'
           whileHover={{
             scale: 1.1
           }}
