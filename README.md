@@ -34,7 +34,7 @@ Application has a full fledged built-in authentication hosted on [**Firebase**](
 
 ## Data
 
-Data used in the map tool part of the application are being fetched from [**Google API**](https://console.cloud.google.com/)
+Data used in the map tool part of the application are being fetched from [**Google API**](https://console.cloud.google.com/).
 
 API's used:
 - Google Maps API
@@ -59,4 +59,4 @@ API's used:
 - React Router
 
 ## Authors
-David Poslušný
+- David Poslušný
