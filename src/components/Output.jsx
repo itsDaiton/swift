@@ -204,7 +204,7 @@ const Output = () => {
         {distanceMatrix.rows[0].elements[0].status === 'ZERO_RESULTS' ?
         <p>No results.</p>
         :
-        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-5 mt-5 w-1/4'>
+        <div className='flex flex-col justify-center items-center glassmorphism py-5 px-5 mt-5 w-[20%]'>
           <div className='flex flex-row items-center space-x-2'>
             <FontAwesomeIcon icon={faRoad}/>
             <p>{distanceMatrix.rows[0].elements[0].distance.text}</p>
