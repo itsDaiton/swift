@@ -28,22 +28,22 @@ const Navbar = () => {
   return (
     <div className='flex justify-between bg-black text-white h-[7vh]'>
 			<div className='flex justify-center items-center pl-6 space-x-4'>
-				<FontAwesomeIcon icon={faPaperPlane} className='text-[36px]'/>
-				<p className='text-[36px] font-poppins tracking-widest font-bold'>
+				<FontAwesomeIcon icon={faPaperPlane} className='sm:text-[36px] text-[32px]'/>
+				<p className={`text-[36px] font-poppins tracking-widest font-bold sm:flex hidden`}>
 					SWIFT
 				</p>
 			</div>
 			{user ?
 			<div className='flex justify-center items-center pr-6 space-x-6'>
 				<p 
-					className='text-[18px] font-poppins cursor-pointer font-semibold'
+					className='sm:text-[18px] text-[16px] font-poppins cursor-pointer font-semibold'
 					onClick={handleSignOut}
 				>
 					Sign Out
 				</p>
 				<img
           src={user.photoURL}
-          className='w-[40px] h-[40px] object-contain rounded-full'
+          className='sm:w-[40px] sm:h-[40px] w-[35px] h-[35px] object-contain rounded-full'
         />
 			</div>
 			: 
