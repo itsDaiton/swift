@@ -22,7 +22,7 @@ Application has a full fledged built-in authentication hosted on [**Firebase**](
 #### Normal
 - Email/password
 
-### OAuth providers
+#### OAuth providers
 - Google
 - Facebook
 - GitHub
