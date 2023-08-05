@@ -10,7 +10,7 @@ Live demo of this application can be found under this [**link**](https://swift-p
 ## Description
 
 ### Map tool
-Swift provides a way for users to plan their routes using fully interactive map. The input takes two locations: origin and destination. After filling in both locations, the tool will then provide user with a planned route. Users can also choose between 3 travel modes:
+Swift provides a way for users to plan their routes using a fully interactive map. The input takes two locations: origin and destination. After filling in both locations, the tool will then provide user with a planned route. Users can also choose between 3 travel modes:
 - Driving
 - Transit
 - Walking
