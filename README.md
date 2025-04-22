@@ -2,7 +2,9 @@
 
 Interactive map tool to plan your trips.
 
-Live demo of this application can be found under this [**link**](https://swift-pst0.onrender.com/).
+Live demo of this application can be found under this [**link**](https://swift-pst0.onrender.com/). 
+
+⚠️**HOSTING IS CURRENTLY UNAVAILABLE.**⚠️
 
 ![image](https://user-images.githubusercontent.com/72783924/223802632-42e92b2c-c230-4ece-9659-e468484327c0.png)
 
